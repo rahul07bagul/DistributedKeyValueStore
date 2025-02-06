@@ -1,30 +1,19 @@
 #include "node.h"
 #include <iostream>
 #include <algorithm>
-#include "core/heartbeat_manager.h"
 
-DistributedNode::DistributedNode(const std::string& id, 
-                               const std::string& addr,
-                               HeartbeatManager& heartbeatmgr)
-    : node_id(id), 
-      address(addr), 
-      heartbeat_mgr(heartbeatmgr) 
+DistributedNode::DistributedNode(const std::string& id, const std::string& addr)
+    : node_id(id), address(addr)
 {
     hash_ring.addNode(node_id);
-    // Initialize network managers for all replica nodes
-    for (const auto& peer : replica_nodes) {
-        network_managers[peer] = std::make_unique<NetworkManager>(peer);
-    }
 }
 
 void DistributedNode::put(const std::string& key, const std::string& value) {
     std::string primary = hash_ring.getNode(key);
-    //std::cerr << "[DEBUG] For key " << key << ", primary is " << primary << std::endl;
     if (primary == node_id) {
         local_store.put(key, value);
         auto successors = hash_ring.getSuccessors(node_id, REPLICATION_FACTOR - 1);
         for (const auto& replicaNode : successors) {
-            std::cerr << "[DEBUG]   -> replica " << replicaNode << std::endl;
             auto it = network_managers.find(replicaNode);
             if (it != network_managers.end()) {
                 bool ok = it->second->put(key, value);
@@ -63,7 +52,7 @@ std::optional<std::string> DistributedNode::get(const std::string& key) {
         }
     }
     auto itPrimary = network_managers.find(primary);
-    if (itPrimary != network_managers.end() && heartbeat_mgr.is_node_alive(primary)) {
+    if (itPrimary != network_managers.end()) {
         auto val = itPrimary->second->get(key);
         if (val.has_value()) {
             return val;
@@ -78,8 +67,6 @@ std::optional<std::string> DistributedNode::get(const std::string& key) {
             }
         }
     }
-
-    std::cerr << "[ERROR] Key '" << key << "' not found on any available nodes." << std::endl;
     return std::nullopt;
 }
 

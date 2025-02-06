@@ -102,11 +102,9 @@ int main(int argc, char* argv[]) {
 
     try {
         // Initialize node components
+        DistributedNode node(node_id, address);
         HeartbeatManager heartbeat_mgr;
-        DistributedNode node(node_id, "127.0.0.1:50051", heartbeat_mgr);
         
-        heartbeat_mgr.setDistributedNode(&node);
-
         // Register peers
         for (const auto& peer : peers) {
             node.addReplicaNode(peer);

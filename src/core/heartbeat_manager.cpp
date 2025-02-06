@@ -1,10 +1,5 @@
 #include "heartbeat_manager.h"
 #include <iostream>
-#include "node.h"
-
-void HeartbeatManager::setDistributedNode(DistributedNode* node) {
-    distributed_node = node;
-}
 
 void HeartbeatManager::start() {
     running = true;
@@ -54,18 +49,8 @@ bool HeartbeatManager::is_node_alive(const std::string& node_id) const {
 }
 
 void HeartbeatManager::handle_node_failure(const std::string& node_id) {
-    std::lock_guard<std::mutex> lock(status_mutex);
-    
-    // Mark node as dead
-    node_statuses[node_id].is_alive = false;
-    
-    // Remove from hash ring
-    distributed_node->getHashRing().removeNode(node_id);
-    
-    // Remove network connection
-    peer_connections.erase(node_id);
-    
-    std::cerr << "[INFO] Removed dead node " << node_id << std::endl;
+    std::cout << "Node failure detected: " << node_id << std::endl;
+    // Implement more sophisticated recovery logic
 }
 
 void HeartbeatManager::add_peer_connection(const std::string& peer_id, std::unique_ptr<NetworkManager> manager) {
