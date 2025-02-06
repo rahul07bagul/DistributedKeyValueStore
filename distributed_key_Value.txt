@@ -1,0 +1,66 @@
+& "R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\protobuf\protoc.exe" `
+    --proto_path=. `
+    --cpp_out=. `
+    --grpc_out=. `
+    --plugin=protoc-gen-grpc="R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe" `
+    rpc_service.proto
+
+
+& "R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\protobuf\protoc.exe" -I=proto --cpp_out=generated proto\helloworld.proto
+
+& "R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\protobuf\protoc.exe" `
+    -I=proto `
+    --grpc_out=generated `
+    --plugin=protoc-gen-grpc="R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe" `
+    proto\helloworld.proto
+
+
+.\build\Release\server.exe
+.\build\Release\client.exe
+
+--------------------------------------------------------------------------
+1. Download vcpkg
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+
+2. Install grpc
+.\vcpkg install grpc:x64-windows
+.\vcpkg install protobuf:x64-windows
+.\vcpkg integrate install
+
+3. Compile proto file
+& "R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\protobuf\protoc.exe" -I=network --cpp_out=network network/rpc_service.proto 
+
+& "R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\protobuf\protoc.exe" `
+    -I=network `
+    --grpc_out=network `
+    --plugin=protoc-gen-grpc="R:\C++\Projects\DistributedKeyValueStore\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe" `
+    network\rpc_service.proto 
+
+4. Using powershell7
+
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+OR
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="R:/C++/Projects/DistributedKeyValueStore/vcpkg/scripts/buildsystems/vcpkg.cmake"
+cmake --build build --config Release
+
+5. Run the code
+.\build\Release\distributed_kv_store.exe --node-id=1 --address=127.0.0.1:50051 -peers=127.0.0.1:50052,127.0.0.1:50053
+.\build\Release\distributed_kv_store.exe --node-id=2 --address=127.0.0.1:50052 --peers=127.0.0.1:50051,127.0.0.1:50053
+.\build\Release\distributed_kv_store.exe --node-id=3 --address=127.0.0.1:50053 --peers=127.0.0.1:50051,127.0.0.1:50052
+
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50051 --address=127.0.0.1:50051 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50052 --address=127.0.0.1:50052 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50053 --address=127.0.0.1:50053 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50054 --address=127.0.0.1:50054 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
+
+6. Test
+put foo bar
+get foo
+
+
+#Removed this paths from environment variables add those
+C:\Users\rahul\anaconda3\Library\bin
+C:\Users\rahul\anaconda3\Library\bin
+C:\Users\rahul\anaconda3\Library\usr\bin
