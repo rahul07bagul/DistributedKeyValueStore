@@ -49,8 +49,20 @@ bool HeartbeatManager::is_node_alive(const std::string& node_id) const {
 }
 
 void HeartbeatManager::handle_node_failure(const std::string& node_id) {
-    std::cout << "Node failure detected: " << node_id << std::endl;
-    // Implement more sophisticated recovery logic
+    {
+        std::lock_guard<std::mutex> lock(status_mutex);
+        std::cout << "Node failure detected: " << node_id << std::endl;
+        
+        auto status_it = node_statuses.find(node_id);
+        if (status_it != node_statuses.end()) {
+            status_it->second.is_alive = false;
+        }
+        
+        auto peer_it = peer_connections.find(node_id);
+        if (peer_it != peer_connections.end()) {
+            peer_connections.erase(peer_it);
+        }
+    }
 }
 
 void HeartbeatManager::add_peer_connection(const std::string& peer_id, std::unique_ptr<NetworkManager> manager) {

@@ -16,7 +16,7 @@ public:
     void put(const std::string& key, const std::string& value);
     std::optional<std::string> get(const std::string& key);
 
-    void addReplicaNode(const std::string& replica_node);
+    void addReplicaNode(const std::string& replica_node, const std::string& replica_address);
 
     std::string getNodeId() const { return node_id; }
     std::string getAddress() const { return address; }

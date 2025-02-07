@@ -13,6 +13,9 @@ bool NetworkManager::put(const std::string& key, const std::string& value) {
     request.set_key(key);
     request.set_value(value);
 
+    std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now() + std::chrono::milliseconds(500);
+    context.set_deadline(deadline);
+
     grpc::Status status = stub_->Put(&context, request, &response);
     return status.ok() && response.success();
 }

@@ -10,9 +10,9 @@
 void print_usage() {
     std::cout << "Usage: kvstore_node [OPTIONS]\n"
               << "Options:\n"
-              << "  --node-id=<id>       Unique identifier for this node\n"
-              << "  --address=<addr>      Address to listen on (e.g., 0.0.0.0:50051)\n"
-              << "  --peers=<addr1,addr2> Comma-separated list of peer addresses\n";
+              << "  --node-id=<id>          Unique identifier for this node\n"
+              << "  --address=<addr>        Address to listen on (e.g., 0.0.0.0:50051)\n"
+              << "  --peers=<id:addr,...>   Comma-separated list of peer id:address pairs\n";
 }
 
 class KVStoreServiceImpl final : public kvstore::KVStoreService::Service {
@@ -76,18 +76,28 @@ std::vector<std::string> split(const std::string& s, char delimiter) {
 int main(int argc, char* argv[]) {
     std::string node_id;
     std::string address;
-    std::vector<std::string> peers;
+    // Mapping from peer id to peer address.
+    std::unordered_map<std::string, std::string> peers;
 
-    // Parse command line arguments
+    // Parse command line arguments.
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         if (arg.find("--node-id=") == 0) {
-            node_id = arg.substr(9);
+            node_id = arg.substr(10);
         } else if (arg.find("--address=") == 0) {
             address = arg.substr(10);
         } else if (arg.find("--peers=") == 0) {
             std::string peers_str = arg.substr(8);
-            peers = split(peers_str, ',');
+            auto entries = split(peers_str, ',');
+            for (const auto& entry : entries) {
+                // Expect each entry in the format "peer_id:peer_address"
+                auto pos = entry.find(':');
+                if (pos != std::string::npos) {
+                    std::string peer_id = entry.substr(0, pos);
+                    std::string peer_address = entry.substr(pos + 1);
+                    peers[peer_id] = peer_address;
+                }
+            }
         } else if (arg == "--help") {
             print_usage();
             return 0;
@@ -101,35 +111,40 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        // Initialize node components
+        // Initialize local node and heartbeat manager.
         DistributedNode node(node_id, address);
         HeartbeatManager heartbeat_mgr;
-        
-        // Register peers
-        for (const auto& peer : peers) {
-            node.addReplicaNode(peer);
-            heartbeat_mgr.register_node(peer);
-            heartbeat_mgr.add_peer_connection(peer, std::make_unique<NetworkManager>(peer));
+
+        // Build a consistent hash ring including self and all peers (by node id).
+        std::vector<std::string> all_nodes;
+        all_nodes.push_back(node_id);
+        for (const auto& [peer_id, peer_addr] : peers) {
+            all_nodes.push_back(peer_id);
+        }
+        std::sort(all_nodes.begin(), all_nodes.end());
+
+        // Register each peer in the hash ring and create their network managers.
+        for (const auto& [peer_id, peer_addr] : peers) {
+            if (peer_id != node_id) {
+                node.addReplicaNode(peer_id, peer_addr);
+                heartbeat_mgr.register_node(peer_id);
+                heartbeat_mgr.add_peer_connection(peer_id, std::make_unique<NetworkManager>(peer_addr));
+            }
         }
 
-        // Start heartbeat manager
+        // Start heartbeat manager.
         heartbeat_mgr.start();
 
-        // Create network connections to peers
-        std::vector<std::unique_ptr<NetworkManager>> peer_connections;
-        for (const auto& peer : peers) {
-            peer_connections.push_back(std::make_unique<NetworkManager>(peer));
-        }
+        // Run the gRPC server in a separate thread.
+        std::thread server_thread([&]() {
+            run_server(address, node, heartbeat_mgr);
+        });
 
-        // Run server in a separate thread
-        std::thread server_thread(run_server, address, std::ref(node), std::ref(heartbeat_mgr));
-
-        // Main loop for interactive commands
+        // Main interactive command loop.
         std::string command;
         while (std::getline(std::cin, command)) {
-            if (command == "quit" || command == "exit") {
+            if (command == "quit" || command == "exit")
                 break;
-            }
 
             std::istringstream iss(command);
             std::string op;
@@ -144,30 +159,28 @@ int main(int argc, char* argv[]) {
             } else if (op == "get") {
                 std::string key;
                 if (iss >> key) {
-                    auto value = node.get(key);
-                    if (value) {
-                        std::cout << "Get: " << key << " -> " << *value << std::endl;
-                    } else {
+                    auto val = node.get(key);
+                    if (val)
+                        std::cout << "Get: " << key << " -> " << *val << std::endl;
+                    else
                         std::cout << "Key not found: " << key << std::endl;
-                    }
                 }
             } else if (op == "status") {
-                std::cout << "Node ID: " << node_id << "\n"
-                         << "Address: " << address << "\n"
-                         << "Connected peers: " << peers.size() << std::endl;
+                std::cout << "Node ID: " << node_id << "\nAddress: " << address << "\nPeers: ";
+                for (const auto& [peer_id, peer_addr] : peers)
+                    std::cout << peer_id << "(" << peer_addr << ") ";
+                std::cout << std::endl;
             } else {
                 std::cout << "Unknown command. Available commands: put, get, status, quit" << std::endl;
             }
         }
 
-        // Clean up
+        // Clean up.
         heartbeat_mgr.stop();
         server_thread.join();
-
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-
     return 0;
 }

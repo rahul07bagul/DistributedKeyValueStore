@@ -70,6 +70,12 @@ std::optional<std::string> DistributedNode::get(const std::string& key) {
     return std::nullopt;
 }
 
+void DistributedNode::addReplicaNode(const std::string& replica_node, const std::string& replica_address) {
+    replica_nodes.push_back(replica_node);
+    hash_ring.addNode(replica_node);
+    network_managers[replica_node] = std::make_unique<NetworkManager>(replica_address);
+}
+
 // void DistributedNode::put(const std::string& key, const std::string& value) {
 //     std::string target_node = hash_ring.getNode(key);
 //     if (target_node == node_id) {
@@ -83,6 +89,20 @@ std::optional<std::string> DistributedNode::get(const std::string& key) {
 //         } else {
 //             std::cerr << "No network manager for node: " << target_node << std::endl;
 //         }
+//     }
+// }
+
+// std::optional<std::string> DistributedNode::get(const std::string& key) {
+//     std::string target_node = hash_ring.getNode(key);
+//     if (target_node == node_id) {
+//         return local_store.get(key);
+//     } else {
+//         auto it = network_managers.find(target_node);
+//         if (it != network_managers.end()) {
+//             return it->second->get(key);
+//         }
+//         std::cerr << "No network manager for node: " << target_node << std::endl;
+//         return std::nullopt;
 //     }
 // }
 
@@ -103,20 +123,6 @@ std::optional<std::string> DistributedNode::get(const std::string& key) {
 //                 std::cerr << "[WARN] Replication to " << peer << " failed for key=" << key << std::endl;
 //             }
 //         }
-//     }
-// }
-
-// std::optional<std::string> DistributedNode::get(const std::string& key) {
-//     std::string target_node = hash_ring.getNode(key);
-//     if (target_node == node_id) {
-//         return local_store.get(key);
-//     } else {
-//         auto it = network_managers.find(target_node);
-//         if (it != network_managers.end()) {
-//             return it->second->get(key);
-//         }
-//         std::cerr << "No network manager for node: " << target_node << std::endl;
-//         return std::nullopt;
 //     }
 // }
 
@@ -142,8 +148,8 @@ std::optional<std::string> DistributedNode::get(const std::string& key) {
 //     return std::nullopt;
 // }
 
-void DistributedNode::addReplicaNode(const std::string& replica_node) {
-    replica_nodes.push_back(replica_node);
-    hash_ring.addNode(replica_node);
-    network_managers[replica_node] = std::make_unique<NetworkManager>(replica_node);
-}
+// void DistributedNode::addReplicaNode(const std::string& replica_node) {
+//     replica_nodes.push_back(replica_node);
+//     hash_ring.addNode(replica_node);
+//     network_managers[replica_node] = std::make_unique<NetworkManager>(replica_node);
+// }

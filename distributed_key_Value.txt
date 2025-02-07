@@ -46,14 +46,19 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="R:/C++/Pr
 cmake --build build --config Release
 
 5. Run the code
-.\build\Release\distributed_kv_store.exe --node-id=1 --address=127.0.0.1:50051 -peers=127.0.0.1:50052,127.0.0.1:50053
-.\build\Release\distributed_kv_store.exe --node-id=2 --address=127.0.0.1:50052 --peers=127.0.0.1:50051,127.0.0.1:50053
-.\build\Release\distributed_kv_store.exe --node-id=3 --address=127.0.0.1:50053 --peers=127.0.0.1:50051,127.0.0.1:50052
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50051 --address=127.0.0.1:50051 --peers=127.0.0.1:50052,127.0.0.1:50053
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50052 --address=127.0.0.1:50052 --peers=127.0.0.1:50051,127.0.0.1:50053
+.\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50053 --address=127.0.0.1:50053 --peers=127.0.0.1:50051,127.0.0.1:50052
 
 .\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50051 --address=127.0.0.1:50051 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
 .\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50052 --address=127.0.0.1:50052 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
 .\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50053 --address=127.0.0.1:50053 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
 .\build\Release\distributed_kv_store.exe --node-id=127.0.0.1:50054 --address=127.0.0.1:50054 --peers=127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053,127.0.0.1:50054
+
+.\build\Release\distributed_kv_store.exe --node-id=node1 --address=127.0.0.1:50051 --peers=node2:127.0.0.1:50052,node3:127.0.0.1:50053
+.\build\Release\distributed_kv_store.exe --node-id=node2 --address=127.0.0.1:50052 --peers=node1:127.0.0.1:50051,node3:127.0.0.1:50053
+.\build\Release\distributed_kv_store.exe --node-id=node3 --address=127.0.0.1:50053 --peers=node1:127.0.0.1:50051,node2:127.0.0.1:50052
+
 
 6. Test
 put foo bar
