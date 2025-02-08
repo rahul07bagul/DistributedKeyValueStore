@@ -16,10 +16,13 @@ This project demonstrates a simple distributed key–value store with the follow
 - Current architecture does not support replication, if one node fails then no way to restore those keys from that node.
 - Current architecture does not support if node fails and restarts again then other nodes won't know that new node is added.
 
+## Demo
+![demo](https://github.com/rahul07bagul/DistributedKeyValueStore/blob/main/demo.png)
+
 ## Design
 ![Design](https://github.com/rahul07bagul/DistributedKeyValueStore/blob/main/design.png)
 
-  ## Prerequisites
+## Prerequisites
 
 - **C++ Compiler:**  
   A modern C++ compiler that supports C++11 or later.
