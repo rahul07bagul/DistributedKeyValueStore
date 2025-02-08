@@ -62,7 +62,7 @@ cd vcpkg
 ```shell
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 OR
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="R:/C++/Projects/DistributedKeyValueStore/vcpkg/scripts/buildsystems/vcpkg.cmake"
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="<your_path>/DistributedKeyValueStore/vcpkg/scripts/buildsystems/vcpkg.cmake"
 cmake --build build --config Release
 ```
 
