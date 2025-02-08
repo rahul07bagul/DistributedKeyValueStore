@@ -6,14 +6,45 @@ void HeartbeatManager::start() {
     heartbeat_thread = std::thread(&HeartbeatManager::heartbeat_worker, this);
 }
 
+// void HeartbeatManager::heartbeat_worker() {
+//     while (running) {
+//         for (const auto& [peer_id, manager] : peer_connections) {
+//             if (!manager->send_heartbeat(peer_id)) {
+//                 handle_node_failure(peer_id);
+//             }
+//         }
+//         std::this_thread::sleep_for(std::chrono::seconds(2));
+//     }
+// }
+
 void HeartbeatManager::heartbeat_worker() {
     while (running) {
-        for (const auto& [peer_id, manager] : peer_connections) {
-            if (!manager->send_heartbeat(peer_id)) {
+        // Take a snapshot of the current peer IDs.
+        std::vector<std::string> peer_ids;
+        {
+            std::lock_guard<std::mutex> lock(status_mutex);
+            for (const auto& [peer_id, manager] : peer_connections) {
+                peer_ids.push_back(peer_id);
+            }
+        }
+        
+        // Iterate over the snapshot.
+        for (const auto& peer_id : peer_ids) {
+            std::unique_ptr<NetworkManager>* manager_ptr = nullptr;
+            {
+                std::lock_guard<std::mutex> lock(status_mutex);
+                auto it = peer_connections.find(peer_id);
+                if (it != peer_connections.end()) {
+                    manager_ptr = &(it->second);
+                }
+            }
+            if (manager_ptr && !(*manager_ptr)->send_heartbeat(peer_id)) {
+                // Handle failure outside of the locked region.
                 handle_node_failure(peer_id);
             }
         }
-        std::this_thread::sleep_for(std::chrono::seconds(2)); // Adjust as needed
+        
+        std::this_thread::sleep_for(std::chrono::seconds(2)); // Adjust as needed.
     }
 }
 
@@ -62,6 +93,10 @@ void HeartbeatManager::handle_node_failure(const std::string& node_id) {
         if (peer_it != peer_connections.end()) {
             peer_connections.erase(peer_it);
         }
+    }
+    
+    if (on_node_failure_callback) {
+        on_node_failure_callback(node_id);
     }
 }
 
