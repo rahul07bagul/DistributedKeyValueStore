@@ -56,6 +56,13 @@ class KVStoreService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::HeartbeatResponse>> PrepareAsyncHeartbeat(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::HeartbeatResponse>>(PrepareAsyncHeartbeatRaw(context, request, cq));
     }
+    virtual ::grpc::Status Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::kvstore::JoinResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::JoinResponse>> AsyncJoin(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::JoinResponse>>(AsyncJoinRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::JoinResponse>> PrepareAsyncJoin(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::JoinResponse>>(PrepareAsyncJoinRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
@@ -65,6 +72,8 @@ class KVStoreService final {
       virtual void Get(::grpc::ClientContext* context, const ::kvstore::GetRequest* request, ::kvstore::GetResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       virtual void Heartbeat(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest* request, ::kvstore::HeartbeatResponse* response, std::function<void(::grpc::Status)>) = 0;
       virtual void Heartbeat(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest* request, ::kvstore::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -76,6 +85,8 @@ class KVStoreService final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::GetResponse>* PrepareAsyncGetRaw(::grpc::ClientContext* context, const ::kvstore::GetRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::HeartbeatResponse>* AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::HeartbeatResponse>* PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::JoinResponse>* AsyncJoinRaw(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::kvstore::JoinResponse>* PrepareAsyncJoinRaw(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -101,6 +112,13 @@ class KVStoreService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::kvstore::HeartbeatResponse>> PrepareAsyncHeartbeat(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::kvstore::HeartbeatResponse>>(PrepareAsyncHeartbeatRaw(context, request, cq));
     }
+    ::grpc::Status Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::kvstore::JoinResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>> AsyncJoin(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>>(AsyncJoinRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>> PrepareAsyncJoin(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>>(PrepareAsyncJoinRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
@@ -110,6 +128,8 @@ class KVStoreService final {
       void Get(::grpc::ClientContext* context, const ::kvstore::GetRequest* request, ::kvstore::GetResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
       void Heartbeat(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest* request, ::kvstore::HeartbeatResponse* response, std::function<void(::grpc::Status)>) override;
       void Heartbeat(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest* request, ::kvstore::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response, std::function<void(::grpc::Status)>) override;
+      void Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -127,9 +147,12 @@ class KVStoreService final {
     ::grpc::ClientAsyncResponseReader< ::kvstore::GetResponse>* PrepareAsyncGetRaw(::grpc::ClientContext* context, const ::kvstore::GetRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::kvstore::HeartbeatResponse>* AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::kvstore::HeartbeatResponse>* PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::kvstore::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>* AsyncJoinRaw(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>* PrepareAsyncJoinRaw(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_Put_;
     const ::grpc::internal::RpcMethod rpcmethod_Get_;
     const ::grpc::internal::RpcMethod rpcmethod_Heartbeat_;
+    const ::grpc::internal::RpcMethod rpcmethod_Join_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -140,6 +163,7 @@ class KVStoreService final {
     virtual ::grpc::Status Put(::grpc::ServerContext* context, const ::kvstore::PutRequest* request, ::kvstore::PutResponse* response);
     virtual ::grpc::Status Get(::grpc::ServerContext* context, const ::kvstore::GetRequest* request, ::kvstore::GetResponse* response);
     virtual ::grpc::Status Heartbeat(::grpc::ServerContext* context, const ::kvstore::HeartbeatRequest* request, ::kvstore::HeartbeatResponse* response);
+    virtual ::grpc::Status Join(::grpc::ServerContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_Put : public BaseClass {
@@ -201,7 +225,27 @@ class KVStoreService final {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_Put<WithAsyncMethod_Get<WithAsyncMethod_Heartbeat<Service > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_Join : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_Join() {
+      ::grpc::Service::MarkMethodAsync(3);
+    }
+    ~WithAsyncMethod_Join() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Join(::grpc::ServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestJoin(::grpc::ServerContext* context, ::kvstore::JoinRequest* request, ::grpc::ServerAsyncResponseWriter< ::kvstore::JoinResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_Put<WithAsyncMethod_Get<WithAsyncMethod_Heartbeat<WithAsyncMethod_Join<Service > > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_Put : public BaseClass {
    private:
@@ -283,7 +327,34 @@ class KVStoreService final {
     virtual ::grpc::ServerUnaryReactor* Heartbeat(
       ::grpc::CallbackServerContext* /*context*/, const ::kvstore::HeartbeatRequest* /*request*/, ::kvstore::HeartbeatResponse* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_Put<WithCallbackMethod_Get<WithCallbackMethod_Heartbeat<Service > > > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_Join : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_Join() {
+      ::grpc::Service::MarkMethodCallback(3,
+          new ::grpc::internal::CallbackUnaryHandler< ::kvstore::JoinRequest, ::kvstore::JoinResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response) { return this->Join(context, request, response); }));}
+    void SetMessageAllocatorFor_Join(
+        ::grpc::MessageAllocator< ::kvstore::JoinRequest, ::kvstore::JoinResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::kvstore::JoinRequest, ::kvstore::JoinResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_Join() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Join(::grpc::ServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* Join(
+      ::grpc::CallbackServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_Put<WithCallbackMethod_Get<WithCallbackMethod_Heartbeat<WithCallbackMethod_Join<Service > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_Put : public BaseClass {
@@ -332,6 +403,23 @@ class KVStoreService final {
     }
     // disable synchronous version of this method
     ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::kvstore::HeartbeatRequest* /*request*/, ::kvstore::HeartbeatResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_Join : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_Join() {
+      ::grpc::Service::MarkMethodGeneric(3);
+    }
+    ~WithGenericMethod_Join() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Join(::grpc::ServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -394,6 +482,26 @@ class KVStoreService final {
     }
     void RequestHeartbeat(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_Join : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_Join() {
+      ::grpc::Service::MarkMethodRaw(3);
+    }
+    ~WithRawMethod_Join() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Join(::grpc::ServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestJoin(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -460,6 +568,28 @@ class KVStoreService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* Heartbeat(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_Join : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_Join() {
+      ::grpc::Service::MarkMethodRawCallback(3,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->Join(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_Join() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Join(::grpc::ServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* Join(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
@@ -543,9 +673,36 @@ class KVStoreService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedHeartbeat(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::kvstore::HeartbeatRequest,::kvstore::HeartbeatResponse>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_Put<WithStreamedUnaryMethod_Get<WithStreamedUnaryMethod_Heartbeat<Service > > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_Join : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_Join() {
+      ::grpc::Service::MarkMethodStreamed(3,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::kvstore::JoinRequest, ::kvstore::JoinResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::kvstore::JoinRequest, ::kvstore::JoinResponse>* streamer) {
+                       return this->StreamedJoin(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_Join() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status Join(::grpc::ServerContext* /*context*/, const ::kvstore::JoinRequest* /*request*/, ::kvstore::JoinResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedJoin(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::kvstore::JoinRequest,::kvstore::JoinResponse>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_Put<WithStreamedUnaryMethod_Get<WithStreamedUnaryMethod_Heartbeat<WithStreamedUnaryMethod_Join<Service > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_Put<WithStreamedUnaryMethod_Get<WithStreamedUnaryMethod_Heartbeat<Service > > > StreamedService;
+  typedef WithStreamedUnaryMethod_Put<WithStreamedUnaryMethod_Get<WithStreamedUnaryMethod_Heartbeat<WithStreamedUnaryMethod_Join<Service > > > > StreamedService;
 };
 
 }  // namespace kvstore

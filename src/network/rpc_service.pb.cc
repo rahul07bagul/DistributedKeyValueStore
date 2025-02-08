@@ -81,6 +81,61 @@ struct PutRequestDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PutRequestDefaultTypeInternal _PutRequest_default_instance_;
 
+inline constexpr JoinResponse::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : success_{false},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR JoinResponse::JoinResponse(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct JoinResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR JoinResponseDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~JoinResponseDefaultTypeInternal() {}
+  union {
+    JoinResponse _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 JoinResponseDefaultTypeInternal _JoinResponse_default_instance_;
+
+inline constexpr JoinRequest::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : node_id_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        address_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR JoinRequest::JoinRequest(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct JoinRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR JoinRequestDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~JoinRequestDefaultTypeInternal() {}
+  union {
+    JoinRequest _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 JoinRequestDefaultTypeInternal _JoinRequest_default_instance_;
+
 inline constexpr HeartbeatResponse::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : acknowledged_{false},
@@ -251,6 +306,25 @@ const ::uint32_t
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::kvstore::HeartbeatResponse, _impl_.acknowledged_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::kvstore::JoinRequest, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::kvstore::JoinRequest, _impl_.node_id_),
+        PROTOBUF_FIELD_OFFSET(::kvstore::JoinRequest, _impl_.address_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::kvstore::JoinResponse, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::kvstore::JoinResponse, _impl_.success_),
 };
 
 static const ::_pbi::MigrationSchema
@@ -261,6 +335,8 @@ static const ::_pbi::MigrationSchema
         {28, -1, -1, sizeof(::kvstore::GetResponse)},
         {38, -1, -1, sizeof(::kvstore::HeartbeatRequest)},
         {47, -1, -1, sizeof(::kvstore::HeartbeatResponse)},
+        {56, -1, -1, sizeof(::kvstore::JoinRequest)},
+        {66, -1, -1, sizeof(::kvstore::JoinResponse)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::kvstore::_PutRequest_default_instance_._instance,
@@ -269,6 +345,8 @@ static const ::_pb::Message* const file_default_instances[] = {
     &::kvstore::_GetResponse_default_instance_._instance,
     &::kvstore::_HeartbeatRequest_default_instance_._instance,
     &::kvstore::_HeartbeatResponse_default_instance_._instance,
+    &::kvstore::_JoinRequest_default_instance_._instance,
+    &::kvstore::_JoinResponse_default_instance_._instance,
 };
 const char descriptor_table_protodef_rpc_5fservice_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
@@ -278,24 +356,27 @@ const char descriptor_table_protodef_rpc_5fservice_2eproto[] ABSL_ATTRIBUTE_SECT
     "key\030\001 \001(\t\"+\n\013GetResponse\022\r\n\005value\030\001 \001(\t\022"
     "\r\n\005found\030\002 \001(\010\"#\n\020HeartbeatRequest\022\017\n\007no"
     "de_id\030\001 \001(\t\")\n\021HeartbeatResponse\022\024\n\014ackn"
-    "owledged\030\001 \001(\0102\270\001\n\016KVStoreService\0220\n\003Put"
-    "\022\023.kvstore.PutRequest\032\024.kvstore.PutRespo"
-    "nse\0220\n\003Get\022\023.kvstore.GetRequest\032\024.kvstor"
-    "e.GetResponse\022B\n\tHeartbeat\022\031.kvstore.Hea"
-    "rtbeatRequest\032\032.kvstore.HeartbeatRespons"
-    "eb\006proto3"
+    "owledged\030\001 \001(\010\"/\n\013JoinRequest\022\017\n\007node_id"
+    "\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\"\037\n\014JoinResponse\022"
+    "\017\n\007success\030\001 \001(\0102\355\001\n\016KVStoreService\0220\n\003P"
+    "ut\022\023.kvstore.PutRequest\032\024.kvstore.PutRes"
+    "ponse\0220\n\003Get\022\023.kvstore.GetRequest\032\024.kvst"
+    "ore.GetResponse\022B\n\tHeartbeat\022\031.kvstore.H"
+    "eartbeatRequest\032\032.kvstore.HeartbeatRespo"
+    "nse\0223\n\004Join\022\024.kvstore.JoinRequest\032\025.kvst"
+    "ore.JoinResponseb\006proto3"
 };
 static ::absl::once_flag descriptor_table_rpc_5fservice_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_rpc_5fservice_2eproto = {
     false,
     false,
-    449,
+    584,
     descriptor_table_protodef_rpc_5fservice_2eproto,
     "rpc_service.proto",
     &descriptor_table_rpc_5fservice_2eproto_once,
     nullptr,
     0,
-    6,
+    8,
     schemas,
     file_default_instances,
     TableStruct_rpc_5fservice_2eproto::offsets,
@@ -1691,6 +1772,472 @@ void HeartbeatResponse::InternalSwap(HeartbeatResponse* PROTOBUF_RESTRICT other)
 }
 
 ::google::protobuf::Metadata HeartbeatResponse::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class JoinRequest::_Internal {
+ public:
+};
+
+JoinRequest::JoinRequest(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:kvstore.JoinRequest)
+}
+inline PROTOBUF_NDEBUG_INLINE JoinRequest::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::kvstore::JoinRequest& from_msg)
+      : node_id_(arena, from.node_id_),
+        address_(arena, from.address_),
+        _cached_size_{0} {}
+
+JoinRequest::JoinRequest(
+    ::google::protobuf::Arena* arena,
+    const JoinRequest& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  JoinRequest* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:kvstore.JoinRequest)
+}
+inline PROTOBUF_NDEBUG_INLINE JoinRequest::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : node_id_(arena),
+        address_(arena),
+        _cached_size_{0} {}
+
+inline void JoinRequest::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+JoinRequest::~JoinRequest() {
+  // @@protoc_insertion_point(destructor:kvstore.JoinRequest)
+  SharedDtor(*this);
+}
+inline void JoinRequest::SharedDtor(MessageLite& self) {
+  JoinRequest& this_ = static_cast<JoinRequest&>(self);
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.node_id_.Destroy();
+  this_._impl_.address_.Destroy();
+  this_._impl_.~Impl_();
+}
+
+inline void* JoinRequest::PlacementNew_(const void*, void* mem,
+                                        ::google::protobuf::Arena* arena) {
+  return ::new (mem) JoinRequest(arena);
+}
+constexpr auto JoinRequest::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(JoinRequest),
+                                            alignof(JoinRequest));
+}
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::internal::ClassDataFull JoinRequest::_class_data_ = {
+    ::google::protobuf::internal::ClassData{
+        &_JoinRequest_default_instance_._instance,
+        &_table_.header,
+        nullptr,  // OnDemandRegisterArenaDtor
+        nullptr,  // IsInitialized
+        &JoinRequest::MergeImpl,
+        ::google::protobuf::Message::GetNewImpl<JoinRequest>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        &JoinRequest::SharedDtor,
+        ::google::protobuf::Message::GetClearImpl<JoinRequest>(), &JoinRequest::ByteSizeLong,
+            &JoinRequest::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+        PROTOBUF_FIELD_OFFSET(JoinRequest, _impl_._cached_size_),
+        false,
+    },
+    &JoinRequest::kDescriptorMethods,
+    &descriptor_table_rpc_5fservice_2eproto,
+    nullptr,  // tracker
+};
+const ::google::protobuf::internal::ClassData* JoinRequest::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 0, 42, 2> JoinRequest::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::kvstore::JoinRequest>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // string address = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(JoinRequest, _impl_.address_)}},
+    // string node_id = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(JoinRequest, _impl_.node_id_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string node_id = 1;
+    {PROTOBUF_FIELD_OFFSET(JoinRequest, _impl_.node_id_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string address = 2;
+    {PROTOBUF_FIELD_OFFSET(JoinRequest, _impl_.address_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+  }},
+  // no aux_entries
+  {{
+    "\23\7\7\0\0\0\0\0"
+    "kvstore.JoinRequest"
+    "node_id"
+    "address"
+  }},
+};
+
+PROTOBUF_NOINLINE void JoinRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:kvstore.JoinRequest)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.node_id_.ClearToEmpty();
+  _impl_.address_.ClearToEmpty();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* JoinRequest::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const JoinRequest& this_ = static_cast<const JoinRequest&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* JoinRequest::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const JoinRequest& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:kvstore.JoinRequest)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // string node_id = 1;
+          if (!this_._internal_node_id().empty()) {
+            const std::string& _s = this_._internal_node_id();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "kvstore.JoinRequest.node_id");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
+          }
+
+          // string address = 2;
+          if (!this_._internal_address().empty()) {
+            const std::string& _s = this_._internal_address();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "kvstore.JoinRequest.address");
+            target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:kvstore.JoinRequest)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t JoinRequest::ByteSizeLong(const MessageLite& base) {
+          const JoinRequest& this_ = static_cast<const JoinRequest&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t JoinRequest::ByteSizeLong() const {
+          const JoinRequest& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:kvstore.JoinRequest)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // string node_id = 1;
+            if (!this_._internal_node_id().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_node_id());
+            }
+            // string address = 2;
+            if (!this_._internal_address().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_address());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void JoinRequest::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<JoinRequest*>(&to_msg);
+  auto& from = static_cast<const JoinRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:kvstore.JoinRequest)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_node_id().empty()) {
+    _this->_internal_set_node_id(from._internal_node_id());
+  }
+  if (!from._internal_address().empty()) {
+    _this->_internal_set_address(from._internal_address());
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void JoinRequest::CopyFrom(const JoinRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:kvstore.JoinRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void JoinRequest::InternalSwap(JoinRequest* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.node_id_, &other->_impl_.node_id_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.address_, &other->_impl_.address_, arena);
+}
+
+::google::protobuf::Metadata JoinRequest::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class JoinResponse::_Internal {
+ public:
+};
+
+JoinResponse::JoinResponse(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:kvstore.JoinResponse)
+}
+JoinResponse::JoinResponse(
+    ::google::protobuf::Arena* arena, const JoinResponse& from)
+    : JoinResponse(arena) {
+  MergeFrom(from);
+}
+inline PROTOBUF_NDEBUG_INLINE JoinResponse::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : _cached_size_{0} {}
+
+inline void JoinResponse::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.success_ = {};
+}
+JoinResponse::~JoinResponse() {
+  // @@protoc_insertion_point(destructor:kvstore.JoinResponse)
+  SharedDtor(*this);
+}
+inline void JoinResponse::SharedDtor(MessageLite& self) {
+  JoinResponse& this_ = static_cast<JoinResponse&>(self);
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+inline void* JoinResponse::PlacementNew_(const void*, void* mem,
+                                        ::google::protobuf::Arena* arena) {
+  return ::new (mem) JoinResponse(arena);
+}
+constexpr auto JoinResponse::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(JoinResponse),
+                                            alignof(JoinResponse));
+}
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::internal::ClassDataFull JoinResponse::_class_data_ = {
+    ::google::protobuf::internal::ClassData{
+        &_JoinResponse_default_instance_._instance,
+        &_table_.header,
+        nullptr,  // OnDemandRegisterArenaDtor
+        nullptr,  // IsInitialized
+        &JoinResponse::MergeImpl,
+        ::google::protobuf::Message::GetNewImpl<JoinResponse>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        &JoinResponse::SharedDtor,
+        ::google::protobuf::Message::GetClearImpl<JoinResponse>(), &JoinResponse::ByteSizeLong,
+            &JoinResponse::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+        PROTOBUF_FIELD_OFFSET(JoinResponse, _impl_._cached_size_),
+        false,
+    },
+    &JoinResponse::kDescriptorMethods,
+    &descriptor_table_rpc_5fservice_2eproto,
+    nullptr,  // tracker
+};
+const ::google::protobuf::internal::ClassData* JoinResponse::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<0, 1, 0, 0, 2> JoinResponse::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    1, 0,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967294,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    1,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::kvstore::JoinResponse>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // bool success = 1;
+    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(JoinResponse, _impl_.success_), 63>(),
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(JoinResponse, _impl_.success_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // bool success = 1;
+    {PROTOBUF_FIELD_OFFSET(JoinResponse, _impl_.success_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+  }},
+  // no aux_entries
+  {{
+  }},
+};
+
+PROTOBUF_NOINLINE void JoinResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:kvstore.JoinResponse)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.success_ = false;
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* JoinResponse::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const JoinResponse& this_ = static_cast<const JoinResponse&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* JoinResponse::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const JoinResponse& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:kvstore.JoinResponse)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // bool success = 1;
+          if (this_._internal_success() != 0) {
+            target = stream->EnsureSpace(target);
+            target = ::_pbi::WireFormatLite::WriteBoolToArray(
+                1, this_._internal_success(), target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:kvstore.JoinResponse)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t JoinResponse::ByteSizeLong(const MessageLite& base) {
+          const JoinResponse& this_ = static_cast<const JoinResponse&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t JoinResponse::ByteSizeLong() const {
+          const JoinResponse& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:kvstore.JoinResponse)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+           {
+            // bool success = 1;
+            if (this_._internal_success() != 0) {
+              total_size += 2;
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void JoinResponse::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<JoinResponse*>(&to_msg);
+  auto& from = static_cast<const JoinResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:kvstore.JoinResponse)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_success() != 0) {
+    _this->_impl_.success_ = from._impl_.success_;
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void JoinResponse::CopyFrom(const JoinResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:kvstore.JoinResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void JoinResponse::InternalSwap(JoinResponse* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+        swap(_impl_.success_, other->_impl_.success_);
+}
+
+::google::protobuf::Metadata JoinResponse::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // @@protoc_insertion_point(namespace_scope)
