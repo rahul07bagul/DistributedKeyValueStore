@@ -1,3 +1,0 @@
-R:/C++/Projects/DistributedKeyValueStore/build/CMakeFiles/distributed_kv_store.dir
-R:/C++/Projects/DistributedKeyValueStore/build/CMakeFiles/ALL_BUILD.dir
-R:/C++/Projects/DistributedKeyValueStore/build/CMakeFiles/ZERO_CHECK.dir

@@ -16,5 +16,6 @@ public:
     bool put(const std::string& key, const std::string& value);
     std::optional<std::string> get(const std::string& key);
     bool send_heartbeat(const std::string& node_id);
+    kvstore::KVStoreService::Stub* getStub() { return stub_.get(); }
 };
 

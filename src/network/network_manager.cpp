@@ -13,6 +13,9 @@ bool NetworkManager::put(const std::string& key, const std::string& value) {
     request.set_key(key);
     request.set_value(value);
 
+    std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now() + std::chrono::milliseconds(500);
+    context.set_deadline(deadline);
+
     grpc::Status status = stub_->Put(&context, request, &response);
     return status.ok() && response.success();
 }
@@ -24,7 +27,6 @@ std::optional<std::string> NetworkManager::get(const std::string& key) {
 
     request.set_key(key);
 
-    // ✅ Set timeout to 500ms
     std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now() + std::chrono::milliseconds(500);
     context.set_deadline(deadline);
 
@@ -32,7 +34,7 @@ std::optional<std::string> NetworkManager::get(const std::string& key) {
 
     if (!status.ok()) {
         std::cerr << "[WARN] gRPC Get request to replica failed: " << status.error_message() << std::endl;
-        return std::nullopt;  // Ensure failure is handled
+        return std::nullopt; 
     }
 
     return response.found() ? std::optional<std::string>(response.value()) : std::nullopt;

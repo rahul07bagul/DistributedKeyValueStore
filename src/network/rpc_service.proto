@@ -6,6 +6,7 @@ service KVStoreService {
   rpc Put(PutRequest) returns (PutResponse);
   rpc Get(GetRequest) returns (GetResponse);
   rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+  rpc Join(JoinRequest) returns (JoinResponse);
 }
 
 message PutRequest {
@@ -32,4 +33,13 @@ message HeartbeatRequest {
 
 message HeartbeatResponse {
   bool acknowledged = 1;
+}
+
+message JoinRequest {
+    string node_id = 1;
+    string address = 2;
+}
+
+message JoinResponse {
+    bool success = 1;
 }

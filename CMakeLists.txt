@@ -49,6 +49,9 @@ add_executable(distributed_kv_store
     src/core/node.cpp
     src/core/consistent_hash.cpp
     src/core/heartbeat_manager.cpp
+    src/core/command_handler.cpp
+    src/core/node_initializer.cpp
+    src/core/input_parser.cpp
     src/network/network_manager.cpp
     src/storage/key_value_store.cpp
     src/network/rpc_service.pb.cc

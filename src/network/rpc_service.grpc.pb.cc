@@ -25,6 +25,7 @@ static const char* KVStoreService_method_names[] = {
   "/kvstore.KVStoreService/Put",
   "/kvstore.KVStoreService/Get",
   "/kvstore.KVStoreService/Heartbeat",
+  "/kvstore.KVStoreService/Join",
 };
 
 std::unique_ptr< KVStoreService::Stub> KVStoreService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -37,6 +38,7 @@ KVStoreService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& cha
   : channel_(channel), rpcmethod_Put_(KVStoreService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_Get_(KVStoreService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_Heartbeat_(KVStoreService_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_Join_(KVStoreService_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status KVStoreService::Stub::Put(::grpc::ClientContext* context, const ::kvstore::PutRequest& request, ::kvstore::PutResponse* response) {
@@ -108,6 +110,29 @@ void KVStoreService::Stub::async::Heartbeat(::grpc::ClientContext* context, cons
   return result;
 }
 
+::grpc::Status KVStoreService::Stub::Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::kvstore::JoinResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::kvstore::JoinRequest, ::kvstore::JoinResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Join_, context, request, response);
+}
+
+void KVStoreService::Stub::async::Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::kvstore::JoinRequest, ::kvstore::JoinResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Join_, context, request, response, std::move(f));
+}
+
+void KVStoreService::Stub::async::Join(::grpc::ClientContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Join_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>* KVStoreService::Stub::PrepareAsyncJoinRaw(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::kvstore::JoinResponse, ::kvstore::JoinRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Join_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::kvstore::JoinResponse>* KVStoreService::Stub::AsyncJoinRaw(::grpc::ClientContext* context, const ::kvstore::JoinRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncJoinRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 KVStoreService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       KVStoreService_method_names[0],
@@ -139,6 +164,16 @@ KVStoreService::Service::Service() {
              ::kvstore::HeartbeatResponse* resp) {
                return service->Heartbeat(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      KVStoreService_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< KVStoreService::Service, ::kvstore::JoinRequest, ::kvstore::JoinResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](KVStoreService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::kvstore::JoinRequest* req,
+             ::kvstore::JoinResponse* resp) {
+               return service->Join(ctx, req, resp);
+             }, this)));
 }
 
 KVStoreService::Service::~Service() {
@@ -159,6 +194,13 @@ KVStoreService::Service::~Service() {
 }
 
 ::grpc::Status KVStoreService::Service::Heartbeat(::grpc::ServerContext* context, const ::kvstore::HeartbeatRequest* request, ::kvstore::HeartbeatResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status KVStoreService::Service::Join(::grpc::ServerContext* context, const ::kvstore::JoinRequest* request, ::kvstore::JoinResponse* response) {
   (void) context;
   (void) request;
   (void) response;

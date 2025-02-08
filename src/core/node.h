@@ -9,18 +9,14 @@
 #include <unordered_map>
 #include <optional>
 
-class HeartbeatManager;
-
 class DistributedNode {
 public:
-    DistributedNode(const std::string& id, const std::string& addr, HeartbeatManager& heartbeatmgr);
+    DistributedNode(const std::string& id, const std::string& addr);
 
     void put(const std::string& key, const std::string& value);
     std::optional<std::string> get(const std::string& key);
 
-    void addReplicaNode(const std::string& replica_node);
-    
-    ConsistentHashRing& getHashRing() { return hash_ring; }
+    void addPeerNode(const std::string& replica_node, const std::string& replica_address);
 
     std::string getNodeId() const { return node_id; }
     std::string getAddress() const { return address; }
@@ -28,15 +24,16 @@ public:
     std::map<std::string, std::unique_ptr<NetworkManager>>& getPeerConnections() {
         return network_managers;
     }
+    
+    void removeNode(const std::string& node_id);
 
 private:
     static constexpr int REPLICATION_FACTOR = 3;
 
     std::string node_id;
     std::string address;
-    HeartbeatManager& heartbeat_mgr;
     KeyValueStore local_store;
     ConsistentHashRing hash_ring;
-    std::vector<std::string> replica_nodes;
+    std::vector<std::string> peer_nodes;
     std::map<std::string, std::unique_ptr<NetworkManager>> network_managers;
 };
